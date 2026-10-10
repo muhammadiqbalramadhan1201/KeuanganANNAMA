@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Kas Mulazamah</title>
+  <title>Kas An-Nama'</title>
   
   <!-- Link ke Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -20,7 +20,7 @@
 <body>
 
   <!-- Ganti dengan URL GAS Anda -->
-  <iframe src="https://script.google.com/macros/s/AKfycbyR34-6monSQbiyUsKmWKTqJVC9GVuP9b6RoxZaLCYsZ6G4JBJwVR6LIPspo2j7iAOM/exec"></iframe>
+  <iframe src="https://script.google.com/macros/s/AKfycby4tAs-nQQD-9hZTQb96ln2xtopU_c1NYITJuN09FapOZQFwWvlaivIE8bf7meH_P4/exec"></iframe>
   
   <script>
     // Mendaftarkan Service Worker agar terdeteksi sebagai PWA murni
