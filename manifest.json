@@ -1,11 +1,12 @@
+```json
 {
   "name": "KAS An-Nama'",
   "short_name": "KAS An-Nama'",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4285F4",
-  "orientation": "portrait",
+  "theme_color": "#0B3D91",
+  "orientation": "any",
   "icons": [
     {
       "src": "icon-192.png",
@@ -21,3 +22,4 @@
     }
   ]
 }
+```
