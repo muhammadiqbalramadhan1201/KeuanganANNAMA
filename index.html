@@ -1,36 +1,445 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>Keuangan An-Nama'</title>
-  
-  <!-- Link ke Manifest -->
+
+  <meta property="og:title" content="Keuangan An-Nama'">
+  <meta property="og:description" content="Keuangan Ma'had An-Nama'">
+  <meta property="og:image" content="https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png">
+  <meta property="og:image:secure_url" content="https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Keuangan An-Nama'">
+  <meta name="twitter:description" content="Keuangan Ma'had An-Nama'">
+  <meta name="twitter:image" content="https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png">
+
   <link rel="manifest" href="manifest.json">
-  <!-- Icon untuk iOS -->
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="theme-color" content="#ffffff">
-  
+  <link rel="apple-touch-icon" href="https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png">
+
+  <meta name="theme-color" content="#0B3D91">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
   <style>
-    /* Membuat iframe penuh tanpa margin */
-    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #ffffff; }
-    iframe { width: 100%; height: 100%; border: none; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+    }
+
+    /* LAYAR MEMPROSES */
+    #processing-screen {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      z-index: 2147483647;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity 0.15s ease,
+        visibility 0.15s ease;
+      will-change: opacity;
+    }
+
+    #processing-screen.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* SPINNER MEMPROSES */
+    .processing-spinner {
+      width: 38px;
+      height: 38px;
+      border: 4px solid #E5E7EB;
+      border-top-color: #0B3D91;
+      border-radius: 50%;
+      animation:
+        processingSpin 0.7s linear infinite;
+      margin-bottom: 13px;
+    }
+
+    @keyframes processingSpin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* TEKS MEMPROSES */
+    #processing-screen .processing-text {
+      color: #0B3D91;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+    }
+
+    /* IFRAME APLIKASI */
+    #app-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      z-index: 1;
+      background: #ffffff;
+    }
+
+    /* INSTALL OVERLAY */
+    #install-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color:
+        rgba(0, 0, 0, 0.7);
+      z-index: 9998;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition:
+        opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    #install-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* INSTALL MODAL */
+    #install-modal {
+      background: #FFFFFF;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow:
+        0 10px 25px rgba(0,0,0,0.5);
+      text-align: center;
+      width: 85%;
+      max-width: 400px;
+      transform: scale(0.8);
+      transition:
+        transform 0.4s ease;
+    }
+
+    #install-overlay.show #install-modal {
+      transform: scale(1);
+    }
+
+    /* ICON INSTALL */
+    .app-icon-placeholder {
+      width: 80px;
+      height: 80px;
+      margin:
+        0 auto 20px auto;
+      background-color:
+        #EEEEEE;
+      border-radius: 18px;
+      background-image:
+        url('https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png');
+      background-size: cover;
+      background-position: center;
+      box-shadow:
+        0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    #install-modal h2 {
+      margin:
+        0 0 10px 0;
+      font-size: 22px;
+      color: #1c1e21;
+    }
+
+    #install-modal p {
+      margin:
+        0 0 25px 0;
+      font-size: 16px;
+      color: #606770;
+      line-height: 1.5;
+    }
+
+    /* TOMBOL INSTALL */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #btn-install {
+      background-color:
+        #4285F4;
+      color: #FFFFFF;
+      border: none;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #btn-install:active {
+      background-color:
+        #2b6cb0;
+    }
+
+    #btn-close {
+      background: none;
+      border: none;
+      color: #777777;
+      font-size: 14px;
+      padding: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* TAMPILAN HP */
+    @media (max-width: 600px) {
+      .processing-spinner {
+        width: 36px;
+        height: 36px;
+      }
+
+      #processing-screen .processing-text {
+        font-size: 15px;
+      }
+    }
   </style>
+
 </head>
+
 <body>
 
-  <!-- Ganti dengan URL GAS Anda -->
-  <iframe src="https://script.google.com/macros/s/AKfycby4tAs-nQQD-9hZTQb96ln2xtopU_c1NYITJuN09FapOZQFwWvlaivIE8bf7meH_P4/exec"></iframe>
-  
+  <!-- LAYAR MEMPROSES -->
+  <div id="processing-screen">
+    <div class="processing-spinner"></div>
+
+    <div class="processing-text">
+      Membuka Aplikasi...
+    </div>
+  </div>
+
+  <!-- APLIKASI GOOGLE APPS SCRIPT -->
+  <iframe
+    id="app-frame"
+    src="https://script.google.com/macros/s/AKfycby4tAs-nQQD-9hZTQb96ln2xtopU_c1NYITJuN09FapOZQFwWvlaivIE8bf7meH_P4/exec"
+    allow="camera; microphone">
+  </iframe>
+
+  <!-- POPUP INSTALLASI -->
+  <div id="install-overlay">
+    <div id="install-modal">
+
+      <div class="app-icon-placeholder"></div>
+
+      <h2>
+        Install Aplikasi
+      </h2>
+
+      <p>
+        Akses aplikasi ini lebih cepat dan mudah langsung dari layar utama HP Anda.
+      </p>
+
+      <div class="action-buttons">
+
+        <button id="btn-install">
+          Tambahkan ke Layar Utama
+        </button>
+
+        <button id="btn-close">
+          Nanti Saja
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
   <script>
-    // Mendaftarkan Service Worker agar terdeteksi sebagai PWA murni
+
+    /* LAYAR MEMPROSES */
+    const processingScreen =
+      document.getElementById(
+        'processing-screen'
+      );
+
+    const appFrame =
+      document.getElementById(
+        'app-frame'
+      );
+
+    /*
+     * Begitu iframe selesai dimuat,
+     * layar Memproses langsung disembunyikan.
+     */
+    appFrame.addEventListener(
+      'load',
+      function() {
+
+        processingScreen.classList
+          .add('hide');
+
+      },
+      { once: false }
+    );
+
+    /* SERVICE WORKER */
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker terdaftar!', reg))
-          .catch(err => console.error('Gagal daftar Service Worker', err));
-      });
+
+      navigator.serviceWorker
+        .register('sw.js')
+        .catch(function(error) {
+
+          console.warn(
+            'Service Worker gagal:',
+            error
+          );
+
+        });
+
     }
+
+    /* PWA INSTALLATION */
+    let deferredPrompt;
+
+    const installOverlay =
+      document.getElementById(
+        'install-overlay'
+      );
+
+    const btnInstall =
+      document.getElementById(
+        'btn-install'
+      );
+
+    const btnClose =
+      document.getElementById(
+        'btn-close'
+      );
+
+    const isStandalone =
+      window.matchMedia(
+        '(display-mode: standalone)'
+      ).matches ||
+      window.navigator.standalone;
+
+    if (!isStandalone) {
+
+      window.addEventListener(
+        'beforeinstallprompt',
+        function(e) {
+
+          /* Cegah prompt bawaan browser */
+          e.preventDefault();
+
+          /* Simpan event */
+          deferredPrompt = e;
+
+          /* Tampilkan popup */
+          installOverlay.style.display =
+            'flex';
+
+          setTimeout(
+            function() {
+
+              installOverlay.classList
+                .add('show');
+
+            },
+            10
+          );
+
+        }
+      );
+
+    }
+
+    /* TOMBOL INSTALL */
+    btnInstall.onclick =
+      async function() {
+
+        hideModal();
+
+        if (deferredPrompt) {
+
+          deferredPrompt.prompt();
+
+          const result =
+            await deferredPrompt.userChoice;
+
+          console.log(
+            'Respon pengguna:',
+            result.outcome
+          );
+
+          deferredPrompt = null;
+
+        }
+
+      };
+
+    /* TOMBOL NANTI SAJA */
+    btnClose.onclick =
+      function() {
+
+        hideModal();
+
+      };
+
+    /* SEMBUNYIKAN MODAL INSTALL */
+    function hideModal() {
+
+      installOverlay.classList
+        .remove('show');
+
+      setTimeout(
+        function() {
+
+          installOverlay.style.display =
+            'none';
+
+        },
+        400
+      );
+
+    }
+
   </script>
+
 </body>
 </html>
