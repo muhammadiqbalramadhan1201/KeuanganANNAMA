@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <title>Keuangan An-Nama'</title>
 
@@ -28,6 +27,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
+    :root {
+      --app-width: 100vw;
+      --app-height: 100vh;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -38,24 +42,21 @@
     body {
       width: 100%;
       height: 100%;
+      min-width: 0;
+      min-height: 0;
       overflow: hidden;
       background: #ffffff;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
     }
 
-    /* LAYAR MEMPROSES */
+    /* LAYAR MEMPROSES: ikut ukuran viewport terbaru */
     #processing-screen {
       position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0 auto auto 0;
+      width: var(--app-width, 100vw);
+      height: var(--app-height, 100vh);
+      height: var(--app-height, 100dvh);
       background: #ffffff;
       z-index: 2147483647;
       display: flex;
@@ -64,9 +65,7 @@
       flex-direction: column;
       opacity: 1;
       visibility: visible;
-      transition:
-        opacity 0.15s ease,
-        visibility 0.15s ease;
+      transition: opacity 0.15s ease, visibility 0.15s ease;
       will-change: opacity;
     }
 
@@ -76,66 +75,66 @@
       pointer-events: none;
     }
 
-    /* SPINNER MEMPROSES */
     .processing-spinner {
       width: 38px;
       height: 38px;
+      flex: 0 0 auto;
       border: 4px solid #E5E7EB;
       border-top-color: #0B3D91;
       border-radius: 50%;
-      animation:
-        processingSpin 0.7s linear infinite;
+      animation: processingSpin 0.7s linear infinite;
       margin-bottom: 13px;
     }
 
     @keyframes processingSpin {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    /* TEKS MEMPROSES */
     #processing-screen .processing-text {
       color: #0B3D91;
       font-size: 16px;
       font-weight: 600;
       letter-spacing: 0.1px;
+      text-align: center;
     }
 
-    /* IFRAME APLIKASI */
+    /* IFRAME: dimensinya diselaraskan kembali saat HP diputar */
     #app-frame {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
+      width: var(--app-width, 100vw);
+      height: var(--app-height, 100vh);
+      height: var(--app-height, 100dvh);
+      border: 0;
       display: block;
       z-index: 1;
       background: #ffffff;
+      max-width: none;
+      max-height: none;
     }
 
-    /* INSTALL OVERLAY */
+    /* POPUP INSTALL */
     #install-overlay {
       display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color:
-        rgba(0, 0, 0, 0.7);
+      inset: 0 auto auto 0;
+      width: var(--app-width, 100vw);
+      height: var(--app-height, 100vh);
+      height: var(--app-height, 100dvh);
+      padding: max(12px, env(safe-area-inset-top))
+               max(12px, env(safe-area-inset-right))
+               max(12px, env(safe-area-inset-bottom))
+               max(12px, env(safe-area-inset-left));
+      background-color: rgba(0, 0, 0, 0.7);
       z-index: 9998;
       justify-content: center;
       align-items: center;
       opacity: 0;
-      transition:
-        opacity 0.4s ease;
+      transition: opacity 0.4s ease;
       pointer-events: none;
+      overflow-y: auto;
     }
 
     #install-overlay.show {
@@ -143,58 +142,49 @@
       pointer-events: auto;
     }
 
-    /* INSTALL MODAL */
     #install-modal {
       background: #FFFFFF;
-      padding: 30px;
+      padding: clamp(18px, 4vw, 30px);
       border-radius: 20px;
-      box-shadow:
-        0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
       text-align: center;
       width: 85%;
       max-width: 400px;
+      max-height: 100%;
+      overflow-y: auto;
       transform: scale(0.8);
-      transition:
-        transform 0.4s ease;
+      transition: transform 0.4s ease;
     }
 
     #install-overlay.show #install-modal {
       transform: scale(1);
     }
 
-    /* ICON INSTALL */
     .app-icon-placeholder {
       width: 80px;
       height: 80px;
-      margin:
-        0 auto 20px auto;
-      background-color:
-        #EEEEEE;
+      margin: 0 auto 20px;
+      background-color: #EEEEEE;
       border-radius: 18px;
-      background-image:
-        url('https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png');
+      background-image: url('https://muhammadiqbalramadhan1201.github.io/KeuanganAnNama/preview.png');
       background-size: cover;
       background-position: center;
-      box-shadow:
-        0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     #install-modal h2 {
-      margin:
-        0 0 10px 0;
+      margin: 0 0 10px;
       font-size: 22px;
       color: #1c1e21;
     }
 
     #install-modal p {
-      margin:
-        0 0 25px 0;
+      margin: 0 0 25px;
       font-size: 16px;
       color: #606770;
       line-height: 1.5;
     }
 
-    /* TOMBOL INSTALL */
     .action-buttons {
       display: flex;
       flex-direction: column;
@@ -202,8 +192,7 @@
     }
 
     #btn-install {
-      background-color:
-        #4285F4;
+      background-color: #4285F4;
       color: #FFFFFF;
       border: none;
       padding: 15px;
@@ -214,8 +203,7 @@
     }
 
     #btn-install:active {
-      background-color:
-        #2b6cb0;
+      background-color: #2b6cb0;
     }
 
     #btn-close {
@@ -228,7 +216,6 @@
       text-decoration: none;
     }
 
-    /* TAMPILAN HP */
     @media (max-width: 600px) {
       .processing-spinner {
         width: 36px;
@@ -239,207 +226,194 @@
         font-size: 15px;
       }
     }
-  </style>
 
+    /* Saat HP landscape, popup tetap muat pada layar yang lebih pendek */
+    @media (orientation: landscape) and (max-height: 500px) {
+      #install-modal {
+        padding: 12px 18px;
+        border-radius: 14px;
+      }
+
+      .app-icon-placeholder {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 8px;
+      }
+
+      #install-modal h2 {
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+
+      #install-modal p {
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .action-buttons {
+        gap: 6px;
+      }
+
+      #btn-install {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
   <!-- LAYAR MEMPROSES -->
   <div id="processing-screen">
     <div class="processing-spinner"></div>
-
-    <div class="processing-text">
-      Membuka Aplikasi...
-    </div>
+    <div class="processing-text">Membuka Aplikasi...</div>
   </div>
 
   <!-- APLIKASI GOOGLE APPS SCRIPT -->
   <iframe
     id="app-frame"
     src="https://script.google.com/macros/s/AKfycby4tAs-nQQD-9hZTQb96ln2xtopU_c1NYITJuN09FapOZQFwWvlaivIE8bf7meH_P4/exec"
+    title="Aplikasi Keuangan An-Nama'"
     allow="camera; microphone">
   </iframe>
 
   <!-- POPUP INSTALLASI -->
   <div id="install-overlay">
     <div id="install-modal">
-
       <div class="app-icon-placeholder"></div>
-
-      <h2>
-        Install Aplikasi
-      </h2>
-
-      <p>
-        Akses aplikasi ini lebih cepat dan mudah langsung dari layar utama HP Anda.
-      </p>
-
+      <h2>Install Aplikasi</h2>
+      <p>Akses aplikasi ini lebih cepat dan mudah langsung dari layar utama HP Anda.</p>
       <div class="action-buttons">
-
-        <button id="btn-install">
-          Tambahkan ke Layar Utama
-        </button>
-
-        <button id="btn-close">
-          Nanti Saja
-        </button>
-
+        <button id="btn-install" type="button">Tambahkan ke Layar Utama</button>
+        <button id="btn-close" type="button">Nanti Saja</button>
       </div>
-
     </div>
   </div>
 
   <script>
-
-    /* LAYAR MEMPROSES */
-    const processingScreen =
-      document.getElementById(
-        'processing-screen'
-      );
-
-    const appFrame =
-      document.getElementById(
-        'app-frame'
-      );
+    /* REFERENSI ELEMEN */
+    const processingScreen = document.getElementById('processing-screen');
+    const appFrame = document.getElementById('app-frame');
+    const installOverlay = document.getElementById('install-overlay');
+    const btnInstall = document.getElementById('btn-install');
+    const btnClose = document.getElementById('btn-close');
 
     /*
-     * Begitu iframe selesai dimuat,
-     * layar Memproses langsung disembunyikan.
+     * Hitung ulang ukuran layar yang sedang terlihat.
+     * visualViewport membantu browser HP yang tinggi layarnya berubah
+     * saat toolbar browser muncul/hilang atau orientasi diubah.
      */
-    appFrame.addEventListener(
-      'load',
-      function() {
+    function syncViewportSize() {
+      const visualViewport = window.visualViewport;
+      const width = Math.round(
+        (visualViewport && visualViewport.width) ||
+        window.innerWidth ||
+        document.documentElement.clientWidth
+      );
+      const height = Math.round(
+        (visualViewport && visualViewport.height) ||
+        window.innerHeight ||
+        document.documentElement.clientHeight
+      );
 
-        processingScreen.classList
-          .add('hide');
+      if (!width || !height) return;
 
-      },
-      { once: false }
-    );
+      document.documentElement.style.setProperty('--app-width', width + 'px');
+      document.documentElement.style.setProperty('--app-height', height + 'px');
+
+      /* Tetapkan ukuran iframe agar viewport isi ikut diperbarui tanpa reload. */
+      appFrame.style.width = width + 'px';
+      appFrame.style.height = height + 'px';
+
+      /* Selaraskan lapisan popup/loading dengan ukuran layar baru. */
+      processingScreen.style.width = width + 'px';
+      processingScreen.style.height = height + 'px';
+      installOverlay.style.width = width + 'px';
+      installOverlay.style.height = height + 'px';
+    }
+
+    /* Beberapa browser melaporkan ukuran rotasi secara bertahap. */
+    let viewportSyncTimers = [];
+    function scheduleViewportSync() {
+      syncViewportSize();
+      requestAnimationFrame(syncViewportSize);
+
+      viewportSyncTimers.forEach(clearTimeout);
+      viewportSyncTimers = [
+        setTimeout(syncViewportSize, 100),
+        setTimeout(syncViewportSize, 300),
+        setTimeout(syncViewportSize, 600)
+      ];
+    }
+
+    /* Ukuran awal dan perubahan ukuran/orientasi. */
+    syncViewportSize();
+    window.addEventListener('resize', scheduleViewportSync, { passive: true });
+    window.addEventListener('orientationchange', scheduleViewportSync, { passive: true });
+    window.addEventListener('pageshow', scheduleViewportSync, { passive: true });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleViewportSync, { passive: true });
+    }
+
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) scheduleViewportSync();
+    });
+
+    /* Sembunyikan layar memproses setelah aplikasi di iframe selesai dimuat. */
+    appFrame.addEventListener('load', function () {
+      processingScreen.classList.add('hide');
+      scheduleViewportSync();
+    });
 
     /* SERVICE WORKER */
     if ('serviceWorker' in navigator) {
-
-      navigator.serviceWorker
-        .register('sw.js')
-        .catch(function(error) {
-
-          console.warn(
-            'Service Worker gagal:',
-            error
-          );
-
-        });
-
+      navigator.serviceWorker.register('sw.js').catch(function (error) {
+        console.warn('Service Worker gagal:', error);
+      });
     }
 
     /* PWA INSTALLATION */
     let deferredPrompt;
-
-    const installOverlay =
-      document.getElementById(
-        'install-overlay'
-      );
-
-    const btnInstall =
-      document.getElementById(
-        'btn-install'
-      );
-
-    const btnClose =
-      document.getElementById(
-        'btn-close'
-      );
-
     const isStandalone =
-      window.matchMedia(
-        '(display-mode: standalone)'
-      ).matches ||
+      window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone;
 
     if (!isStandalone) {
+      window.addEventListener('beforeinstallprompt', function (event) {
+        event.preventDefault();
+        deferredPrompt = event;
+        installOverlay.style.display = 'flex';
+        syncViewportSize();
 
-      window.addEventListener(
-        'beforeinstallprompt',
-        function(e) {
-
-          /* Cegah prompt bawaan browser */
-          e.preventDefault();
-
-          /* Simpan event */
-          deferredPrompt = e;
-
-          /* Tampilkan popup */
-          installOverlay.style.display =
-            'flex';
-
-          setTimeout(
-            function() {
-
-              installOverlay.classList
-                .add('show');
-
-            },
-            10
-          );
-
-        }
-      );
-
+        requestAnimationFrame(function () {
+          installOverlay.classList.add('show');
+        });
+      });
     }
 
     /* TOMBOL INSTALL */
-    btnInstall.onclick =
-      async function() {
+    btnInstall.addEventListener('click', async function () {
+      hideModal();
 
-        hideModal();
-
-        if (deferredPrompt) {
-
-          deferredPrompt.prompt();
-
-          const result =
-            await deferredPrompt.userChoice;
-
-          console.log(
-            'Respon pengguna:',
-            result.outcome
-          );
-
-          deferredPrompt = null;
-
-        }
-
-      };
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        console.log('Respon pengguna:', result.outcome);
+        deferredPrompt = null;
+      }
+    });
 
     /* TOMBOL NANTI SAJA */
-    btnClose.onclick =
-      function() {
-
-        hideModal();
-
-      };
+    btnClose.addEventListener('click', hideModal);
 
     /* SEMBUNYIKAN MODAL INSTALL */
     function hideModal() {
-
-      installOverlay.classList
-        .remove('show');
-
-      setTimeout(
-        function() {
-
-          installOverlay.style.display =
-            'none';
-
-        },
-        400
-      );
-
+      installOverlay.classList.remove('show');
+      setTimeout(function () {
+        installOverlay.style.display = 'none';
+      }, 400);
     }
-
   </script>
-
 </body>
 </html>
